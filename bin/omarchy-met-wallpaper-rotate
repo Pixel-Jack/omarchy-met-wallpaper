@@ -2,9 +2,15 @@
 # omarchy:summary=Set the wallpaper slot for the current hour
 set -euo pipefail
 PLUGIN_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
+
+if python3 -B "$PLUGIN_DIR/bin/omarchy-met-wallpaper-engine.py" is-paused; then
+  echo "omarchy-met-wallpaper-rotate: paused, leaving wallpaper as-is" >&2
+  exit 0
+fi
+
 HOUR="$(date +%H)"
 
-IMAGE="$(python3 "$PLUGIN_DIR/bin/omarchy-met-wallpaper-engine.py" path "$HOUR")" || {
+IMAGE="$(python3 -B "$PLUGIN_DIR/bin/omarchy-met-wallpaper-engine.py" path "$HOUR")" || {
   echo "omarchy-met-wallpaper-rotate: no image cached yet for hour $HOUR" >&2
   exit 0
 }

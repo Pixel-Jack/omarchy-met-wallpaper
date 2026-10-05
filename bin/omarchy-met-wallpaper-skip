@@ -1,0 +1,11 @@
+#!/bin/bash
+# omarchy:summary=Skip to the next cached Met Wallpaper image
+set -euo pipefail
+PLUGIN_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
+
+IMAGE="$(python3 -B "$PLUGIN_DIR/bin/omarchy-met-wallpaper-engine.py" skip)" || {
+  echo "omarchy-met-wallpaper-skip: no cached images for today yet" >&2
+  exit 0
+}
+
+omarchy-theme-bg-set "$IMAGE"

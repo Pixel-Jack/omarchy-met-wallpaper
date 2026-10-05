@@ -6,6 +6,11 @@ Subcommands:
             promote today's set active, and prune stale days (safe to run often).
   status  - print cache/plan state as JSON.
   path    - print the active image path for a given hour slot (used by rotate).
+  list    - print {paused, items} for today, items used by the bar panel.
+  skip    - print the path of the next ready image after the current one.
+  use     - print the path for a given hour slot, regardless of the clock.
+  toggle-pause - flip the paused flag, print "paused" or "resumed".
+  is-paused    - exit 0 if paused, 1 otherwise (used by rotate to no-op).
 """
 import io
 import json
@@ -438,6 +443,76 @@ def cmd_path(hour):
     return 0
 
 
+CURRENT_BACKGROUND_LINK = Path.home() / ".local/state/omarchy/current/background"
+
+
+def current_background_path():
+    try:
+        return CURRENT_BACKGROUND_LINK.resolve()
+    except OSError:
+        return None
+
+
+def ready_hours(d, slots):
+    return [h for h in range(IMAGES_PER_DAY) if slot_valid(d, slots[h])]
+
+
+def cmd_list():
+    today = date.today()
+    slots = load_day_manifest(today)
+    current = current_background_path()
+    items = []
+    for hour in ready_hours(today, slots):
+        slot = slots[hour]
+        path = day_dir(today) / slot["file"]
+        items.append({
+            "hour": hour,
+            "file": str(path),
+            "title": slot.get("title") or "Untitled",
+            "artist": slot.get("artist") or "Unknown artist",
+            "active": current is not None and path.resolve() == current,
+        })
+    paused = load_index().get("paused", False)
+    print(json.dumps({"paused": paused, "items": items}))
+
+
+def cmd_toggle_pause():
+    index = load_index()
+    index["paused"] = not index.get("paused", False)
+    save_index(index)
+    print("paused" if index["paused"] else "resumed")
+
+
+def cmd_is_paused():
+    return 0 if load_index().get("paused", False) else 1
+
+
+def cmd_skip():
+    today = date.today()
+    slots = load_day_manifest(today)
+    hours = ready_hours(today, slots)
+    if not hours:
+        return 1
+    current = current_background_path()
+    cur_idx = None
+    for i, h in enumerate(hours):
+        if current is not None and (day_dir(today) / slots[h]["file"]).resolve() == current:
+            cur_idx = i
+            break
+    next_hour = hours[(cur_idx + 1) % len(hours)] if cur_idx is not None else hours[0]
+    print(day_dir(today) / slots[next_hour]["file"])
+    return 0
+
+
+def cmd_use(hour):
+    today = date.today()
+    slots = load_day_manifest(today)
+    if hour < 0 or hour >= IMAGES_PER_DAY or not slot_valid(today, slots[hour]):
+        return 1
+    print(day_dir(today) / slots[hour]["file"])
+    return 0
+
+
 def main():
     if len(sys.argv) < 2:
         print(__doc__, file=sys.stderr)
@@ -452,6 +527,21 @@ def main():
     if cmd == "path":
         hour = int(sys.argv[2]) if len(sys.argv) > 2 else datetime.now().hour
         return cmd_path(hour)
+    if cmd == "list":
+        cmd_list()
+        return 0
+    if cmd == "skip":
+        return cmd_skip()
+    if cmd == "use":
+        if len(sys.argv) < 3:
+            print("usage: use <hour>", file=sys.stderr)
+            return 2
+        return cmd_use(int(sys.argv[2]))
+    if cmd == "toggle-pause":
+        cmd_toggle_pause()
+        return 0
+    if cmd == "is-paused":
+        return cmd_is_paused()
     print(f"unknown subcommand: {cmd}", file=sys.stderr)
     return 2
 

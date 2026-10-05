@@ -1,0 +1,13 @@
+#!/bin/bash
+# omarchy:summary=Use a specific hour's cached Met Wallpaper image right now
+# omarchy:args=<hour>
+set -euo pipefail
+PLUGIN_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
+HOUR="${1:?usage: omarchy-met-wallpaper-use <hour>}"
+
+IMAGE="$(python3 -B "$PLUGIN_DIR/bin/omarchy-met-wallpaper-engine.py" use "$HOUR")" || {
+  echo "omarchy-met-wallpaper-use: hour $HOUR is not cached" >&2
+  exit 1
+}
+
+omarchy-theme-bg-set "$IMAGE"

@@ -1,0 +1,11 @@
+#!/bin/bash
+# omarchy:summary=Pause or resume automatic hourly Met Wallpaper rotation
+set -euo pipefail
+PLUGIN_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
+
+STATE="$(python3 -B "$PLUGIN_DIR/bin/omarchy-met-wallpaper-engine.py" toggle-pause)"
+echo "$STATE"
+
+if [[ "$STATE" == "resumed" ]]; then
+  "$PLUGIN_DIR/bin/omarchy-met-wallpaper-rotate" || true
+fi

@@ -1,0 +1,5 @@
+#!/bin/bash
+# omarchy:summary=Print today's ready Met Wallpaper images as JSON
+set -euo pipefail
+PLUGIN_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
+exec python3 -B "$PLUGIN_DIR/bin/omarchy-met-wallpaper-engine.py" list

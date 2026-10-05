@@ -4,7 +4,7 @@ set -euo pipefail
 PLUGIN_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
 echo "Current wallpaper: $(omarchy-theme-bg-current 2>/dev/null || echo unknown)"
 echo
-python3 "$PLUGIN_DIR/bin/omarchy-met-wallpaper-engine.py" status
+python3 -B "$PLUGIN_DIR/bin/omarchy-met-wallpaper-engine.py" status
 echo
 echo "Timers:"
 systemctl --user list-timers 'omarchy-met-wallpaper-*' --no-legend 2>/dev/null || true

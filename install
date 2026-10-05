@@ -10,6 +10,10 @@ BIN_DIR="$HOME/.local/bin"
 chmod +x "$SCRIPT_DIR"/bin/omarchy-met-wallpaper-plan \
   "$SCRIPT_DIR"/bin/omarchy-met-wallpaper-rotate \
   "$SCRIPT_DIR"/bin/omarchy-met-wallpaper-status \
+  "$SCRIPT_DIR"/bin/omarchy-met-wallpaper-list \
+  "$SCRIPT_DIR"/bin/omarchy-met-wallpaper-skip \
+  "$SCRIPT_DIR"/bin/omarchy-met-wallpaper-use \
+  "$SCRIPT_DIR"/bin/omarchy-met-wallpaper-toggle-pause \
   "$SCRIPT_DIR"/bin/omarchy-met-wallpaper-engine.py
 
 mkdir -p "$UNITS_DIR" "$BIN_DIR"
@@ -26,7 +30,8 @@ for unit in "$SCRIPT_DIR"/systemd/*; do
   ln -s "$unit" "$target"
 done
 
-for name in omarchy-met-wallpaper-plan omarchy-met-wallpaper-rotate omarchy-met-wallpaper-status; do
+for name in omarchy-met-wallpaper-plan omarchy-met-wallpaper-rotate omarchy-met-wallpaper-status \
+  omarchy-met-wallpaper-skip omarchy-met-wallpaper-toggle-pause; do
   target="$BIN_DIR/$name"
   if [[ -L $target && "$(readlink -f "$target")" == "$(readlink -f "$SCRIPT_DIR/bin/$name")" ]]; then
     continue
