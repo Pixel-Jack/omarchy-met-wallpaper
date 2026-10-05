@@ -1,0 +1,10 @@
+[Unit]
+Description=Reconcile the Omarchy Met Wallpaper cache after connectivity gaps
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=20min
+Unit=omarchy-met-wallpaper-plan.service
+
+[Install]
+WantedBy=timers.target

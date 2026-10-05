@@ -1,0 +1,6 @@
+[Unit]
+Description=Omarchy Met Wallpaper - set the wallpaper for the current hour
+
+[Service]
+Type=oneshot
+ExecStart=%h/.config/omarchy/plugins/io.github.pixel-jack.met-wallpaper/bin/omarchy-met-wallpaper-rotate

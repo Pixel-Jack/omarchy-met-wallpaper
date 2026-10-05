@@ -1,0 +1,5 @@
+#!/bin/bash
+# omarchy:summary=Refill the rolling Met Wallpaper image cache
+set -euo pipefail
+PLUGIN_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
+exec python3 "$PLUGIN_DIR/bin/omarchy-met-wallpaper-engine.py" plan

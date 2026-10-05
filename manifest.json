@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.pixel-jack.met-wallpaper",
+  "name": "Met Wallpaper",
+  "version": "1.0.0",
+  "author": "Pixel-Jack",
+  "license": "MIT",
+  "description": "Rotating desktop background of public-domain landscape paintings from the Met Museum's Open Access collection, with title/artist/date caption overlay",
+  "kinds": [
+    "automation"
+  ],
+  "entryPoints": {}
+}

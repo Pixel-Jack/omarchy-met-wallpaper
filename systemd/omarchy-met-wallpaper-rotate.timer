@@ -1,0 +1,10 @@
+[Unit]
+Description=Hourly Omarchy Met Wallpaper rotation
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+Unit=omarchy-met-wallpaper-rotate.service
+
+[Install]
+WantedBy=timers.target

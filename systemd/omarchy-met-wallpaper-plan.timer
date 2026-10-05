@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily refresh of the Omarchy Met Wallpaper cache
+
+[Timer]
+OnCalendar=*-*-* 00:05:00
+Persistent=true
+Unit=omarchy-met-wallpaper-plan.service
+
+[Install]
+WantedBy=timers.target

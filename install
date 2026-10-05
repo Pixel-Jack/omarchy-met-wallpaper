@@ -1,0 +1,56 @@
+#!/bin/bash
+# Set up systemd --user timers and CLI symlinks for Met Wallpaper, then
+# trigger a first background cache fill. Idempotent: safe to re-run.
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+UNITS_DIR="$HOME/.config/systemd/user"
+BIN_DIR="$HOME/.local/bin"
+
+chmod +x "$SCRIPT_DIR"/bin/omarchy-met-wallpaper-plan \
+  "$SCRIPT_DIR"/bin/omarchy-met-wallpaper-rotate \
+  "$SCRIPT_DIR"/bin/omarchy-met-wallpaper-status \
+  "$SCRIPT_DIR"/bin/omarchy-met-wallpaper-engine.py
+
+mkdir -p "$UNITS_DIR" "$BIN_DIR"
+
+for unit in "$SCRIPT_DIR"/systemd/*; do
+  name="$(basename "$unit")"
+  target="$UNITS_DIR/$name"
+  if [[ -L $target && "$(readlink -f "$target")" == "$(readlink -f "$unit")" ]]; then
+    continue
+  elif [[ -e $target ]]; then
+    echo "install: refusing to replace existing $target" >&2
+    exit 1
+  fi
+  ln -s "$unit" "$target"
+done
+
+for name in omarchy-met-wallpaper-plan omarchy-met-wallpaper-rotate omarchy-met-wallpaper-status; do
+  target="$BIN_DIR/$name"
+  if [[ -L $target && "$(readlink -f "$target")" == "$(readlink -f "$SCRIPT_DIR/bin/$name")" ]]; then
+    continue
+  elif [[ -e $target ]]; then
+    echo "install: refusing to replace existing $target" >&2
+    exit 1
+  fi
+  ln -s "$SCRIPT_DIR/bin/$name" "$target"
+done
+
+systemctl --user daemon-reload
+systemctl --user enable --now \
+  omarchy-met-wallpaper-plan.timer \
+  omarchy-met-wallpaper-retry.timer \
+  omarchy-met-wallpaper-rotate.timer
+
+echo "Timers installed. Triggering the first cache fill in the background..."
+systemctl --user start --no-block omarchy-met-wallpaper-plan.service
+
+cat <<MSG
+
+Done. The first day's 24 images download and caption in the background
+(check progress with: omarchy-met-wallpaper-status). Once ready, the
+hourly timer applies them automatically, or run:
+  omarchy-met-wallpaper-rotate
+right away to set the current hour's image without waiting.
+MSG
