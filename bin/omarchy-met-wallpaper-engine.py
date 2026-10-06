@@ -57,26 +57,32 @@ class OfflineError(Exception):
 
 
 TARGET_ASPECT = None  # set by cmd_plan() via detect_target_aspect()
+MIN_ASPECT = None
+MAX_ASPECT = None
 
 
 def detect_target_aspect():
-    # Omarchy's background renderer uses Image.PreserveAspectCrop, which crops
-    # whatever doesn't match the screen's aspect ratio. Cropping to that same
-    # ratio ourselves, before captioning, keeps the crop predictable and keeps
-    # the caption (burned into the bottom-right corner) from landing outside
-    # the visible, cropped frame.
+    # Omarchy's background renderer shares one image across every connected
+    # monitor, independently applying Image.PreserveAspectCrop per screen. With
+    # more than one monitor, no single crop is exactly right for all of them,
+    # so this picks the aspect that minimizes the worst-case crop on either
+    # side: the geometric mean of the narrowest and widest connected monitor.
+    # render_caption() then pads the caption's margins by that worst-case crop
+    # so it stays on-screen everywhere, not just on whichever monitor this
+    # happened to be focused when the image was cropped.
     try:
         out = subprocess.run(
             ["hyprctl", "monitors", "-j"], capture_output=True, timeout=3, check=True
         ).stdout
         monitors = json.loads(out)
-        mon = next((m for m in monitors if m.get("focused")), monitors[0])
-        w, h = mon["width"], mon["height"]
-        if w > 0 and h > 0:
-            return w / h
+        aspects = [m["width"] / m["height"] for m in monitors if m.get("width") and m.get("height")]
+        if not aspects:
+            raise ValueError("hyprctl reported no monitors")
+        lo, hi = min(aspects), max(aspects)
+        return (lo * hi) ** 0.5, lo, hi
     except Exception as e:
-        log(f"could not detect monitor aspect ratio, defaulting to 16:9: {e}")
-    return 16 / 9
+        log(f"could not detect monitor aspect ratios, defaulting to 16:9: {e}")
+        return 16 / 9, 16 / 9, 16 / 9
 
 
 def crop_to_aspect(image, aspect):
@@ -263,8 +269,19 @@ def render_caption(image, lines):
     block_h -= line_gap
 
     margin = max(20, width // 60)
-    box_x1 = width - margin
-    box_y1 = height - margin
+
+    # Extra inset so the caption survives being cropped again for a different
+    # monitor's aspect ratio (see detect_target_aspect()), not just the one
+    # TARGET_ASPECT was computed for.
+    extra_right = 0
+    extra_bottom = 0
+    if MIN_ASPECT and MIN_ASPECT < TARGET_ASPECT:
+        extra_right = round((1 - MIN_ASPECT / TARGET_ASPECT) / 2 * width)
+    if MAX_ASPECT and MAX_ASPECT > TARGET_ASPECT:
+        extra_bottom = round((1 - TARGET_ASPECT / MAX_ASPECT) / 2 * height)
+
+    box_x1 = width - margin - extra_right
+    box_y1 = height - margin - extra_bottom
     box_x0 = box_x1 - block_w - 2 * padding
     box_y0 = box_y1 - block_h - 2 * padding
     draw.rounded_rectangle(
@@ -396,9 +413,9 @@ def prune_old_days(keep_dates):
 
 
 def cmd_plan():
-    global TARGET_ASPECT
+    global TARGET_ASPECT, MIN_ASPECT, MAX_ASPECT
     STATE_DIR.mkdir(parents=True, exist_ok=True)
-    TARGET_ASPECT = detect_target_aspect()
+    TARGET_ASPECT, MIN_ASPECT, MAX_ASPECT = detect_target_aspect()
     today = date.today()
     window = [today + timedelta(days=i) for i in range(FORWARD_DAYS)]
 
