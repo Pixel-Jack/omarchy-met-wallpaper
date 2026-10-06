@@ -55,11 +55,11 @@ BarWidget {
     onExited: if (panelLoader.item) panelLoader.item.refresh()
   }
 
-  WidgetButton {
+  BarIconButton {
     id: button
     anchors.fill: parent
     bar: root.bar
-    text: "🖼"
+    text: "󰹉" // nf-md-image_frame
     tooltipText: "Met Wallpaper — click to browse today's paintings, scroll to skip"
     onPressed: function (buttonCode) {
       if (buttonCode === Qt.LeftButton) root.toggle()
