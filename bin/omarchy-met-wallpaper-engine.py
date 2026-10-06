@@ -205,6 +205,21 @@ def looks_like_painting(obj):
     return "paint" in classification or "paint" in medium
 
 
+# The Met API has no content-rating field. Its `tags` array uses a controlled
+# subject vocabulary that does include nudity as a genre, e.g. "Female Nudes"
+# and "Male Nudes" (confirmed against real objects) - this is a heuristic, not
+# a guarantee, but it catches the tagged cases without needing image analysis.
+NSFW_TAG_KEYWORDS = ("nude", "erotic", "sexual")
+
+
+def is_safe_for_work(obj):
+    for tag in obj.get("tags") or []:
+        term = (tag.get("term") or "").lower()
+        if any(keyword in term for keyword in NSFW_TAG_KEYWORDS):
+            return False
+    return True
+
+
 def artist_timerange(obj):
     begin, end = obj.get("artistBeginDate"), obj.get("artistEndDate")
     if begin and end:
@@ -302,6 +317,8 @@ def fetch_and_process(object_id):
     if not obj.get("isPublicDomain") or not obj.get("primaryImage"):
         return None
     if not looks_like_painting(obj):
+        return None
+    if not is_safe_for_work(obj):
         return None
 
     raw = http_get_bytes(obj["primaryImage"])
