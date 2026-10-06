@@ -36,7 +36,7 @@ stale days) as soon as connectivity returns.
 
 ```sh
 omarchy plugin add https://github.com/Pixel-Jack/omarchy-met-wallpaper.git --enable
-~/.config/omarchy/plugins/io.github.pixel-jack.met-wallpaper/install
+~/.config/omarchy/plugins/pixel-jack.met-wallpaper/install
 ```
 
 `install` sets up the three systemd --user timers, symlinks the CLI
@@ -50,8 +50,8 @@ effect either way.
 ## Remove
 
 ```sh
-~/.config/omarchy/plugins/io.github.pixel-jack.met-wallpaper/uninstall
-omarchy plugin remove io.github.pixel-jack.met-wallpaper
+~/.config/omarchy/plugins/pixel-jack.met-wallpaper/uninstall
+omarchy plugin remove pixel-jack.met-wallpaper
 ```
 
 `uninstall` stops and removes the timers and `~/.local/bin` symlinks but

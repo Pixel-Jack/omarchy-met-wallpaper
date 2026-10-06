@@ -5,9 +5,9 @@ import qs.Ui
 
 BarWidget {
   id: root
-  moduleName: "io.github.pixel-jack.met-wallpaper"
+  moduleName: "pixel-jack.met-wallpaper"
 
-  readonly property string pluginDir: Quickshell.env("HOME") + "/.config/omarchy/plugins/io.github.pixel-jack.met-wallpaper"
+  readonly property string pluginDir: Quickshell.env("HOME") + "/.config/omarchy/plugins/pixel-jack.met-wallpaper"
 
   readonly property bool opened: panelLoader.item ? panelLoader.item.opened === true : false
   readonly property bool popoutSwitchClosing: panelLoader.item ? panelLoader.item.popoutSwitchClosing === true : false

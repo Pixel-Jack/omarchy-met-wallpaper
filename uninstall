@@ -18,7 +18,8 @@ for name in omarchy-met-wallpaper-plan.timer omarchy-met-wallpaper-plan.service 
   [[ -L $target ]] && rm -f "$target"
 done
 
-for name in omarchy-met-wallpaper-plan omarchy-met-wallpaper-rotate omarchy-met-wallpaper-status; do
+for name in omarchy-met-wallpaper-plan omarchy-met-wallpaper-rotate omarchy-met-wallpaper-status \
+  omarchy-met-wallpaper-skip omarchy-met-wallpaper-toggle-pause; do
   target="$BIN_DIR/$name"
   [[ -L $target ]] && rm -f "$target"
 done
@@ -28,4 +29,4 @@ systemctl --user daemon-reload
 echo "Timers and symlinks removed."
 echo "Cached images remain in ~/.local/state/omarchy-met-wallpaper"
 echo "  rm -rf ~/.local/state/omarchy-met-wallpaper   # to delete them"
-echo "Then: omarchy plugin remove io.github.pixel-jack.met-wallpaper"
+echo "Then: omarchy plugin remove pixel-jack.met-wallpaper"

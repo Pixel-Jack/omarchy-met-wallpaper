@@ -6,12 +6,12 @@ import qs.Ui
 
 Panel {
   id: root
-  moduleName: "io.github.pixel-jack.met-wallpaper"
+  moduleName: "pixel-jack.met-wallpaper"
   manageIpc: false
 
   property var anchorItem: null
   property var hostWidget: null
-  readonly property string pluginDir: Quickshell.env("HOME") + "/.config/omarchy/plugins/io.github.pixel-jack.met-wallpaper"
+  readonly property string pluginDir: Quickshell.env("HOME") + "/.config/omarchy/plugins/pixel-jack.met-wallpaper"
   property var items: []
   property bool paused: false
 

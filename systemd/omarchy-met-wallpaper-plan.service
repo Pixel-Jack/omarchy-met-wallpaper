@@ -3,4 +3,4 @@ Description=Omarchy Met Wallpaper - refill rolling image cache
 
 [Service]
 Type=oneshot
-ExecStart=%h/.config/omarchy/plugins/io.github.pixel-jack.met-wallpaper/bin/omarchy-met-wallpaper-plan
+ExecStart=%h/.config/omarchy/plugins/pixel-jack.met-wallpaper/bin/omarchy-met-wallpaper-plan
