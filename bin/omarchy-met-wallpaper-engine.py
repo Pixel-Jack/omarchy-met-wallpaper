@@ -102,6 +102,11 @@ def http_get(url):
     try:
         with urllib.request.urlopen(req, timeout=REQUEST_TIMEOUT) as resp:
             return resp.read()
+    except urllib.error.HTTPError:
+        # A real response with a bad status (404, 500, ...) - the server is
+        # reachable, so this isn't a connectivity problem. Let it propagate
+        # as a normal error for the caller to handle per-request.
+        raise
     except (urllib.error.URLError, TimeoutError) as e:
         raise OfflineError(str(e)) from e
 
@@ -111,6 +116,8 @@ def http_get_bytes(url):
     try:
         with urllib.request.urlopen(req, timeout=REQUEST_TIMEOUT) as resp:
             return resp.read()
+    except urllib.error.HTTPError:
+        raise
     except (urllib.error.URLError, TimeoutError) as e:
         raise OfflineError(str(e)) from e
 
@@ -402,6 +409,12 @@ def cmd_plan():
         pool = load_json(POOL_FILE, None)
         if not pool:
             print("offline:no-pool")
+            return
+    except urllib.error.HTTPError as e:
+        log(f"Met API search returned {e.code}, cannot refresh pool yet: {e}")
+        pool = load_json(POOL_FILE, None)
+        if not pool:
+            print("error:no-pool")
             return
 
     index = load_index()
