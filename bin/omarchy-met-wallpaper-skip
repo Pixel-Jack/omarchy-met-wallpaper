@@ -8,4 +8,5 @@ IMAGE="$(python3 -B "$PLUGIN_DIR/bin/omarchy-met-wallpaper-engine.py" skip)" || 
   exit 0
 }
 
+echo "omarchy-met-wallpaper-skip: switching to $IMAGE" >&2
 omarchy-theme-bg-set "$IMAGE"

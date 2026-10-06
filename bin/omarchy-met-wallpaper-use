@@ -10,4 +10,5 @@ IMAGE="$(python3 -B "$PLUGIN_DIR/bin/omarchy-met-wallpaper-engine.py" use "$HOUR
   exit 1
 }
 
+echo "omarchy-met-wallpaper-use: switching to $IMAGE" >&2
 omarchy-theme-bg-set "$IMAGE"
