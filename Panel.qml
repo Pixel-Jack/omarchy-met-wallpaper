@@ -45,6 +45,11 @@ Panel {
     if (!togglePauseProc.running) togglePauseProc.running = true
   }
 
+  function openSource(url) {
+    if (!url) return
+    Util.execArgv(["omarchy-launch-browser", url])
+  }
+
   onOpenedChanged: if (opened) refresh()
 
   Process {
@@ -198,12 +203,16 @@ Panel {
                   anchors.fill: parent
                   hoverEnabled: true
                   cursorShape: Qt.PointingHandCursor
-                  onClicked: root.use(cell.modelData.hour)
+                  acceptedButtons: Qt.LeftButton | Qt.RightButton
+                  onClicked: function (mouse) {
+                    if (mouse.button === Qt.RightButton) root.openSource(cell.modelData.source_url)
+                    else root.use(cell.modelData.hour)
+                  }
                 }
 
                 PanelToolTip {
                   visible: cellMouse.containsMouse
-                  text: cell.modelData.title + " — " + cell.modelData.artist
+                  text: cell.modelData.title + " — " + cell.modelData.artist + "\nRight-click to open on metmuseum.org"
                 }
               }
             }

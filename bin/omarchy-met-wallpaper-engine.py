@@ -518,6 +518,7 @@ def cmd_list():
             "title": slot.get("title") or "Untitled",
             "artist": slot.get("artist") or "Unknown artist",
             "active": current is not None and path.resolve() == current,
+            "source_url": slot.get("source_url") or "",
         })
     paused = load_index().get("paused", False)
     print(json.dumps({"paused": paused, "items": items}))
