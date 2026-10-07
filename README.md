@@ -55,9 +55,6 @@ omarchy plugin add https://github.com/Pixel-Jack/omarchy-met-wallpaper.git --ena
 commands into `~/.local/bin`, and kicks off the first cache fill in the
 background. It's idempotent, safe to re-run.
 
-This plugin has no bar widget or panel — it only runs background
-automation, so enabling/disabling it in the Omarchy plugin list has no
-effect either way.
 
 ## Remove
 
