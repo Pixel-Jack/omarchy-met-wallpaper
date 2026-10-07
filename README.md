@@ -7,10 +7,17 @@ one per hour, and burns a caption — title, artist, artist's origin and
 lifespan, and the work's creation date — into the bottom-right corner of
 each image before setting it as the wallpaper.
 
-<img width="1908" height="1080" alt="screenshot-2026-10-07_10-14-52" src="https://github.com/user-attachments/assets/42bb7375-2fb2-4ac5-a68f-cfe7954ecf19" />
-<img width="372" height="504" alt="screenshot-2026-10-07_10-15-21" src="https://github.com/user-attachments/assets/81787094-1d5c-4278-8b75-6d8e152b2ff6" />
-<img width="529" height="82" alt="screenshot-2026-10-07_10-15-33" src="https://github.com/user-attachments/assets/e03e714e-5d13-4649-8511-db54e905e7d7" />
+## Examples
 
+<p align="center">
+  <img width="1908" height="1080" alt="screenshot-2026-10-07_10-14-52" src="https://github.com/user-attachments/assets/42bb7375-2fb2-4ac5-a68f-cfe7954ecf19" />
+</p>
+<p align="center">
+  <img width="372" height="504" alt="screenshot-2026-10-07_10-15-21" src="https://github.com/user-attachments/assets/81787094-1d5c-4278-8b75-6d8e152b2ff6" />
+</p>
+<p align="center">
+  <img width="529" height="82" alt="screenshot-2026-10-07_10-15-33" src="https://github.com/user-attachments/assets/e03e714e-5d13-4649-8511-db54e905e7d7" />
+</p>
 
 ## How it works
 
