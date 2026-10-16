@@ -7,7 +7,6 @@
   "license": "MIT",
   "description": "Rotating desktop background of public-domain landscape paintings from the Met Museum's Open Access collection, captioned with title/artist/date. Browse, skip, and pause from the bar.",
   "kinds": [
-    "automation",
     "bar-widget"
   ],
   "entryPoints": {
